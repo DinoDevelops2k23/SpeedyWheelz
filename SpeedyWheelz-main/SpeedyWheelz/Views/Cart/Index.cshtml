@@ -1,0 +1,190 @@
+﻿@model SpeedyWheelz.Models.Cart
+
+<style>
+    @@media (min-width: 1025px) {
+        .h-custom {
+            height: 100vh !important;
+        }
+    }
+
+    #cartItemDelete {
+        cursor: pointer;
+    }
+</style>
+
+<section class="h-100 h-custom" style="background-color: #eee;">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body p-4">
+
+                        <div class="row">
+
+                            <div class="col-lg-12 col-sm-6" id="prodContent">
+                                <h5 class="mb-3">
+                                    <a href="#!" class="text-body">
+                                        <i class="flaticon-arrow-left me-2"></i>Continue shopping
+                                    </a>
+                                </h5>
+                                <hr>
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                </div>
+                                @foreach (var item in Model.Items)
+                                {
+                                    <div id="product-@item.Product.ProductId">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between">
+                                                    <div class="d-flex flex-row align-items-center">
+                                                        <div>
+                                                            <img src="../../Content/Images/@item.Product.ImageUrl"
+                                                                 class="img-fluid rounded" alt="Shopping item" style="width: 65px; margin-left: -11px;">
+                                                        </div>
+                                                        <div class="text-center">
+                                                            <h5>@item.Product.Name</h5>
+                                                            <p class="small mb-0">@item.Product.Description</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-row align-items-center">
+                                                        <div style="width: 25px;">
+                                                            <button class="increase-quantity-button btn btn-sm btn-primary" data-item-id="@item.Product.ProductId" data-quantity="1">+</button>
+                                                            <input class="form-control form-control-sm form-control-plaintext" id="quantVal_@item.Product.ProductId" type="number" name="Quantity" value="@item.Quantity" />
+                                                            <button class="decrease-quantity-button btn btn-sm btn-primary" data-item-id="@item.Product.ProductId" data-quantity="1">-</button>
+
+                                                        </div>
+                                                        <div class="d-flex" style="width: 80px;">
+                                                            <h5 class="mb-0">R @item.Product.Price</h5>
+                                                            <a id="cartItemDelete" onclick="removeFromCart('@item.Product.ProductId', )"> <i style="margin-top: 5px; margin-left: 10px;" class="fa fa-trash"></i></a>
+                                                        </div>
+                                                        <a href="#!" style="color: #cecece;"><i class="fas fa-trash-alt"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (Model != null)
+                                {
+                                    <div id="lessThan" class="text-center">
+                                        <button type="button" class="btn-sm btn-warning">R35 delivery fee for orders less than <span class="badge">R500</span></button>
+                                    </div>
+                                }
+
+                                <div class="row" id="totalPriceDiv">
+                                    <div>Total Price: R <input type="number" class="input-group" disabled id="totalPaid" value="@Model.TotalPrice" /> </div>
+                                </div>
+                                <div class="row">
+                                    @if (Model.Items.Count == 0)
+                                    {
+                                        <a href="#" id="nextCheckout" class="btn btn-primary disabled btn-block">Next</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("Index", "Order")" id="nextCheckout" class="btn btn-primary btn-block">Next</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Action("showMore","Order")
+</section>
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+if (@Model.TotalPrice > 500) {
+    $('#lessThan').hide();
+}
+</script>
+<script>
+    function removeFromCart(productId) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("RemoveFromCart", "Cart")/"+productId,
+            data: { productId: productId },
+            success: function (data) {
+                if (data.success) {
+                    $('#product-' + productId).remove();
+                    $('#totalPriceDiv').load(location.href + " #totalPriceDiv>*", "").then;
+                    $('#cartDisplay').load(location.href + " #cartDisplay>*", "");
+                    setTimeout(function () {
+                        if($('#totalnInput').val() <= 30) {
+                            $('#nextCheckout').addClass('disabled');
+                        }
+                    }, 5000)
+                } else {
+                    $('#product-' + productId).remove();
+                    $('#totalPriceDiv').load(location.href + " #totalPriceDiv>*", "");
+                    $('#cartDisplay').load(location.href + " #cartDisplay>*", "");
+                    setTimeout(function () {
+                        if ($('#totalnInput').val() <= 30) {
+                            $('#nextCheckout').addClass('disabled');
+                        }
+                    }, 5000)
+                }
+            }
+        });
+    }
+
+
+    $(document).on('click', '.increase-quantity-button', function () {
+        const itemId = $(this).data('item-id');
+        const newQuantity = $(this).data('quantity');
+        var currentQuant = $('#quantVal_' + itemId).val();
+        var total = parseInt(currentQuant) + parseInt(newQuantity);
+        console.log(total);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AddToCart", "Cart")',
+            data: { productId: itemId, quantity: newQuantity },
+            success: function (response) {
+                $('#quantVal_'+itemId).val(total);
+                $('#totalPriceDiv').load(location.href + " #totalPriceDiv>*", "");
+                $('#cartDisplay').load(location.href + " #cartDisplay>*", "");
+                if ($('#totalnInput').val() > 500) {
+                    $('#lessThan').css('display', 'none');
+                }
+            },
+            error: function (response) {
+                // code to handle the error response
+                console.log(response);
+            }
+        });
+    });
+
+    $(document).on('click', '.decrease-quantity-button', function () {
+        const itemId = $(this).data('item-id');
+        const newQuantity = $(this).data('quantity');
+        var currentQuant = $('#quantVal_' + itemId).val();
+        var total = parseInt(currentQuant) - parseInt(newQuantity);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("DecreaseCartItem", "Cart")',
+            data: { productId: itemId, quantity: newQuantity },
+            success: function (response) {
+                if (total <= 0) {
+                    $('#nextCheckout').addClass('disabled');
+                    $('#product-' + itemId).remove();
+                    removeFromCart(itemId);
+                }
+                $('#quantVal_' + itemId).val(total);
+                $('#totalPriceDiv').load(location.href + " #totalPriceDiv>*", "");
+                $('#cartDisplay').load(location.href + " #cartDisplay>*", "");
+                console.log($('#totalPaid').val())
+                if ($('#totalnInput').val() < 500) {
+                    $('#lessThan').css('display', 'show');
+                } 
+            },
+            error: function (response) {
+                // code to handle the error response
+                console.log(response);
+            }
+        });
+    });
+</script>

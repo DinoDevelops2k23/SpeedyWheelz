@@ -1,0 +1,27 @@
+﻿@{ 
+    ViewBag.Title = "Thank You For Your Order";
+}
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    $(document).ready(function () {
+        $('#submission').click();
+    });
+</script>
+
+<div>
+    @using (Html.BeginForm("Checkout", "Order", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <input id="submission" type="submit" value="Submit">
+        <div class="container">
+            <h1 class="text-center">Thank You For Your Order!</h1>
+            <p class="text-center">We appreciate your business and will process your order promptly.</p>
+            <p class="text-center">Be prepared to recieve it any minute now</p>
+            <div class="text-center mt-5">
+                <input id="submission" class="btn btn-primary" type="submit" value="Return to home">
+            </div>
+        </div>
+    }
+</div>
+

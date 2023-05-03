@@ -1,0 +1,86 @@
+﻿@model SpeedyWheelz.Models.Product
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="../../Content/Images/@Model.ImageUrl" class="img-fluid" alt="@Model.Name">
+        </div>
+    </div>
+    <div class="row product">
+        <div class="col-md-6  text text-center">
+            @if (!String.IsNullOrEmpty(Model.Tag.Name) && Model.stockCount > 0)
+            {
+                <span style="margin-left: 15px;" class="sale">@Model.Tag.Name</span>
+            }
+            else if (Model.stockCount <= 0)
+            {
+                <span style="margin-left: 15px;" class="sale">Out Of Stock</span>
+            }
+            @if (Model.AlcoholCategory.Name == "None" || Model.AlcoholCategory == null)
+            {
+                <span class="category">@Model.TobaccoCategory.Name</span>
+            }
+            else
+            {
+                <span class="category">@Model.AlcoholCategory.Name</span>
+            }
+            <h2>@Model.Name</h2>
+            <h4>Price: R @Model.Price</h4>
+            <hr>
+            <hr>
+            <p>@Model.Description</p>
+            <hr>
+        </div>
+        @if (Model.stockCount <= 0)
+        {
+            <div class="row ml-2">
+                <button disabled class="btn btn-primary">Add To Cart</button>
+            </div>
+        }
+        else
+        {
+            <div class="row ml-2">
+                <button onclick="addToCart('@Model.ProductId', 1)" class="btn btn-primary">Add To Cart</button>
+            </div>
+        }
+
+    </div>
+</div>
+
+<script>
+    function addToCart(productId, quantity) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("AddToCart", "Cart")",
+            data: { productId: productId, quantity: quantity },
+            success: function (data) {
+                if (data.success) {
+                    $('#menuPrompt').fadeIn();
+                    $('#cartDisplay').load(location.href + " #cartDisplay>*", "");
+                    $('#cartItemsDiv').load(location.href + " #cartItemsDiv>*", "");
+                } else {
+                    alert("Please login/Register to add an item");
+                }
+            }
+        });
+    }
+
+    $('#promptYes').click(function () {
+        $('#MenuWrapper').html('<img src="/Loading.gif" alt="Loading" /><img src="~/Loading.gif" hidden alt="Loading" />');
+        $('#promptNo').text('Close');
+        $.ajax({
+            url: '@Url.Action("Menu", "Products")',
+            type: 'get',
+            success: function (data) {
+                $('#MenuWrapper').html(data);
+            },
+            failure: function (error) {
+                console.log(error);
+            }
+        })
+    })
+
+    $('#promptNo').click(function () {
+        $('#menuPrompt').hide();
+    });
+</script>

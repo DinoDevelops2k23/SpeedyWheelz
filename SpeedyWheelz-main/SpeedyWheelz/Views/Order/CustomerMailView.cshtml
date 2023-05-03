@@ -1,0 +1,101 @@
+﻿@model SpeedyWheelz.Models.Cart
+
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>A simple, clean, and responsive HTML invoice template</title>
+</head>
+
+<body>
+    <div class="invoice-box" style="max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); font-size: 16px; line-height: 24px; font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;">
+        <table cellpadding="0" cellspacing="0" style="margin-left: 20%;">
+            <tr class="top">
+                <td colspan="2">
+                    <table style="width: 100%; line-height: inherit; text-align: left;">
+                        <tr>
+                            <td style="font-size: 45px; line-height: 45px; color: #333;">
+                                <img src="https://i.postimg.cc/zBd8bL7V/icon-96x96.png" />
+                            </td>
+
+                            <td style="padding-bottom: 20px;">
+                                Created: @DateTime.Now<br />
+                                Due: @DateTime.Now
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td colspan="2">
+                    <table style="width: 100%; line-height: inherit; text-align: left;">
+                        <tr>
+                            @Html.Action("PartialMailAddress", "Order")
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="heading">
+                <td style="background: #b7472a; border-bottom: 1px solid #ddd; font-weight: bold;">Payment Method</td>
+
+                <td style="background: #b7472a; border-bottom: 1px solid #ddd; font-weight: bold;">Location</td>
+            </tr>
+
+            <tr class="details">
+                <td style="padding-bottom: 20px;">Debit/Credit Card</td>
+
+                <td style="padding-bottom: 20px;">Online</td>
+            </tr>
+
+            <tr class="heading">
+                <td style="background: #b7472a; border-bottom: 1px solid #ddd; font-weight: bold;">Item</td>
+
+                <td style="background: #b7472a; border-bottom: 1px solid #ddd; font-weight: bold;">Price</td>
+            </tr>
+
+            @foreach (var item in Model.Items)
+            {
+                <tr class="item">
+                    <td style="border-bottom: 1px solid #eee;">@item.Product.Name</td>
+
+                    <td style="border-bottom: 1px solid #eee;">R @item.TotalPrice</td>
+                </tr>
+            }
+
+            @if (Model.TotalPrice < 500)
+            {
+                var total = Model.TotalPrice + 30;
+                <div>
+                <tr class="total">
+                    <td></td>
+
+                    <td>Delivery: R 30</td>
+
+                <tr class="total">
+                    <td></td>
+
+                    <td>Total: R @total</td>
+                </tr>
+        </div>
+    }
+    else
+    {
+        <div>
+            <tr class="total">
+                <td></td>
+
+                <td>Total: @Model.TotalPrice</td>
+            </tr>
+        </div>
+    }
+            </table>
+            </div>
+        </body>
+    </html>

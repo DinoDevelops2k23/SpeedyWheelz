@@ -1,0 +1,536 @@
+﻿@using System.Configuration
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="manifest" href="@Url.Content("~/manifest.json")" crossorigin="use-credentials">
+    <meta name="theme-color" content="#b7472a" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="~/Content/AppIcon/icon-192x192.png">
+    <!-- Google fonts-->
+    <link rel="icon" href="@Url.Content("~/Content/favicon.ico")" />
+    <link rel="stylesheet" href="@Url.Content("~/fonts/PayPalSansBig-Regular-Klim.ttf")" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/css/animate.css">
+    <link rel="stylesheet" href="~/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/css/magnific-popup.css">
+    <link rel="stylesheet" href="~/css/flaticon.css">
+    <link rel="stylesheet" href="~/css/style.css">
+</head>
+<body>
+    <a hidden href="javascript:void(0)" onclick="start()">Click</a>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker
+                .register('/sw.js')
+                .then(function () { console.log('Service Worker Registered'); });
+        }
+    </script>
+    <style>
+        .preloader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background-image: url('/Loading.gif');
+            background-repeat: no-repeat;
+            background-color: #FFF;
+            background-position: center;
+        }
+
+        #ftco-loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Center modal */
+        #menuPrompt {
+            text-align: center;
+        }
+
+        #MenuWrapper {
+            overflow-y: auto;
+        }
+
+        #menuPrompt:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -4px; /* Adjusts for spacing */
+        }
+
+        #menuPrompt .modal-dialog {
+            display: inline-block;
+            text-align: left;
+            vertical-align: middle;
+            margin-right: 30px;
+            overflow-y: auto;
+        }
+
+        /* Mobile responsive */
+        @@media (max-width: 767px) {
+            #menuPrompt .modal-dialog {
+                max-width: 90%;
+            }
+        }
+
+        /* Center modal */
+        .modal {
+            text-align: center;
+        }
+
+            .modal:before {
+                content: '';
+                display: inline-block;
+                height: 100%;
+                vertical-align: middle;
+                margin-right: -4px; /* Adjusts for spacing */
+            }
+
+        .modal-dialog {
+            display: inline-block;
+            text-align: left;
+            vertical-align: middle;
+            margin-right: 30px;
+        }
+
+        /* Mobile responsive */
+        @@media (max-width: 767px) {
+            .modal-dialog {
+                max-width: 90%;
+            }
+        }
+
+        .showing {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+
+
+    @if (ViewContext.RouteData.Values["controller"].ToString() != "Admin")
+    {
+        if (ViewContext.RouteData.Values["controller"].ToString() == "Transport" && ViewContext.RouteData.Values["controller"].ToString() != "Default")
+        {
+            <div id="menuSelectMain" hidden class="text-center justify-content-center align-items-center">
+                <div class="text-center">
+                    <ul class="nav nav-pills nav-justified">
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="transportPage()" id="transportation" href="javascript:void(0)">Transport</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="drinksPage()" id="drinks" href="javascript:void(0)">Drinks</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#food">Coming Soon</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--Navigation bar -->
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="ftco-navbar">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="@Url.Action("Index", "Transport")">Speedy <span style="color: #b7472a;">Wheelz</span></a>
+                    </div>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="mr-3"><a href="@Url.Action("Register", "Account")"> Sign Up</a></li>
+                            <li><a href="@Url.Action("Login", "Account")"> Log In</a></li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="mr-3">
+                                @using (Html.BeginForm("LogOff", "Account", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <a class="nav-link" href="javascript:;" onclick="document.forms[0].submit();">LOGOUT</a>
+                                }
+                            </li>
+                        </ul>
+                    }
+                </div>
+            </nav>
+        }
+        if (ViewContext.RouteData.Values["controller"].ToString() != "Account" && ViewContext.RouteData.Values["controller"].ToString() != "Default" && ViewContext.RouteData.Values["controller"].ToString() != "Driver" && ViewContext.RouteData.Values["controller"].ToString() != "Transport")
+        {
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark ftco-navbar-light" id="ftco-navbar">
+                <div class="container">
+                    <a class="navbar-brand" href="@Url.Action("Index", "Home")">Speedy <span style="color: #b7472a;">Wheelz</span></a>
+                    <div class="order-lg-last btn-group" id="cartDisplay">
+                        <a href="#" class="btn-cart dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="flaticon-shopping-bag"></span> <span style="color: #b7472a;"> @Html.Action("CartCount", "Cart")</span>
+                        </a>
+                        <div id="cartItemsDiv" class="dropdown-menu dropdown-menu-right">
+                            @Html.Action("CartItems", "Cart")
+                        </div>
+                    </div>
+
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="oi oi-menu"></span> Menu
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="ftco-nav">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item active"><a href="@Url.Action("Index", "Home")" class="nav-link">Home</a></li>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li class="nav-item dropdown open">
+                                    <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" style="color: white !important" aria-expanded="true">Products</a>
+                                    <div class="dropdown-menu show" aria-labelledby="dropdown04">
+                                        <a class="dropdown-item" href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 2 })">Brandy</a>
+                                        <a class="dropdown-item" href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 9 })">Gin</a>
+                                        <a class="dropdown-item" href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 1 })">Rum</a>
+                                        <a class="dropdown-item" href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 6 })">Tequila</a>
+                                        <a class="dropdown-item" href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 7 })">Vodka</a>
+                                        <a class="dropdown-item" href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 5 })">Whiskey</a>
+                                        <a class="dropdown-item" href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 3 })">Beer</a>
+                                        <a class="dropdown-item" href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 4 })">Cider</a>
+                                        <a class="dropdown-item" href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 8 })">Tobacco</a>
+                                        <a class="dropdown-item font-weight-bold" href="@Url.Action("Index", "Cart")">Cart</a>
+                                    </div>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Login", "Account")">Login</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Login", "Account")">Register</a>
+                                </li>
+                            }
+
+                            <li class="nav-item">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { @style = "margin-top: 12px;" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <a class="nav-link" href="javascript:;" onclick="document.forms[0].submit();">LOGOUT</a>
+                                    }
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        }
+    }
+    <!-- END nav -->
+    <!-- Modal -->
+    <div class="modal" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Are you 18 years old?</h4>
+                </div>
+                <div class="modal-body">
+                    <p>You must be at least 18 years old to access this website. Are you 18 or older?</p>
+                    <div hidden id="ageVerify" class="text-center">
+                        <p class="text-danger">You have to be 18  in order to access this website</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="noBtn">No</button>
+                    <button type="button" class="btn btn-primary" id="yesBtn">Yes</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="menuPrompt" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add More Products?</h4>
+                </div>
+                <div class="modal-body" id="MenuWrapper">
+                    <p>Would You Like To Add More Products?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="promptNo">No</button>
+                    <button type="button" class="btn btn-primary" id="promptYes">Yes</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="body-content">
+        @RenderBody()
+    </div>
+    <div class="preloader"></div>
+
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/jquery.easing.1.3.js"></script>
+    <script src="~/js/jquery.waypoints.min.js"></script>
+    <script src="~/js/jquery.stellar.min.js"></script>
+    <script src="~/js/owl.carousel.min.js"></script>
+    <script src="~/js/jquery.magnific-popup.min.js"></script>
+    <script src="~/js/jquery.animateNumber.min.js"></script>
+    <script src="~/js/scrollax.min.js"></script>
+    <script src="~/js/main.js"></script>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/push.min.js" integrity="sha512-eiqtDDb4GUVCSqOSOTz/s/eiU4B31GrdSb17aPAA4Lv/Cjc8o+hnDvuNkgXhSI5yHuDvYkuojMaQmrB5JB31XQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/serviceWorker.min.js" integrity="sha512-gZN7SatPzB7LiGjOd4Sree/ecjktoLPgWt22wfApKrzuCpS9KsK7uKEDB+AAGY96NHCW1sAEm1JdaHDDP4MsIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <script>
+            $(window).on('load', function () {
+                $('.preloader').fadeOut('slow');
+            });
+            function drinksPage() {
+                         $.ajax({
+                             url: '@Url.Action("Index", "Home")',
+                             type: 'get',
+                             success: function (data) {
+                                 console.log("clicked");
+                                 $('#Content').fadeOut(200, function () {
+                                     $(this).html(data).fadeIn(200);
+                                 });
+                                 $('#helpText').fadeOut();
+                                 $('#ftco-loader').fadeOut();
+                                 setTimeout(function () {
+                                     $('#menuSelect').hide();
+                                     $('#menuSelectMain').removeAttr('hidden');
+                                     var drinksLink = $('.nav-link#drinks');
+                                     drinksLink.addClass('active');
+                                 }, 1000)
+                             },
+                             failure: function () {
+                                 console.log("Error")
+                             }
+                         });
+                    }
+        </script>
+    }
+    else
+    {
+        <script>
+            $(window).on('beforeunload', function () {
+                $('.preloader').fadeIn('slow');
+            });
+
+            setTimeout(function () {
+                $('.preloader').fadeOut('slow');
+            }, 1500)
+
+            /*$(window).on('load', function () {
+                $('.preloader').fadeOut('slow');
+            });
+            */
+
+            function drinksPage() {
+                 $.ajax({
+                     url: '@Url.Action("Login", "Account")',
+                     type: 'get',
+                     success: function (data) {
+                         $('#Content').fadeOut(200, function () {
+                             $(this).html(data).fadeIn(200);
+                         });
+                         $('#helpText').fadeOut();
+                         $('#ftco-loader').fadeOut();
+                         setTimeout(function () {
+                             $('#menuSelect').hide();
+                             $('#menuSelectMain').removeAttr('hidden');
+                             var drinksLink = $('.nav-link#drinks');
+                             drinksLink.addClass('active');
+                         }, 1000)
+                     },
+                     failure: function () {
+                         console.log("Error")
+                     }
+                 });
+        }
+        </script>
+    }
+
+    <script>
+        function transportPage() {
+            if (!$('#menuSelect').hasClass('up')) {
+                $('#menuSelect').addClass('up');
+                $('#helpText').addClass('fade');
+            }
+            $.ajax({
+                url: '@Url.Action("Index", "Transport")',
+                type: 'get',
+                success: function (data) {
+                    $('#Content').fadeOut(200, function () {
+                        $(this).html(data).fadeIn(200);
+                    });
+                    $('#helpText').fadeOut();
+                    $('#ftco-loader').fadeOut();
+                    setTimeout(function () {
+                        $('#menuSelect').hide();
+                        $('#menuSelectMain').removeAttr('hidden').fadeIn();
+                        var transportLink = $('.nav-link#transportation');
+                        transportLink.addClass('active');
+                    }, 1000)
+                },
+                failure: function () {
+                    // handle failure
+                }
+            });
+        }
+
+
+
+        $('#noBtn').click(function () {
+            $('#ageVerify').removeAttr('hidden');
+        })
+
+        //Push notifications
+        vapidDetails = {
+                subject: '@ConfigurationManager.AppSettings["Email"].ToString()',
+                publicKey: '@ConfigurationManager.AppSettings["publicKey"].ToString()',
+                privateKey: '@ConfigurationManager.AppSettings["privateKey"].ToString()'
+    }
+
+        //Push notification config
+        if ('serviceWorker' in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("/sw.js")
+                    .then((reg) => {
+                        if (Notification.permission === "granted") {
+                            getSubscription(reg);
+                        } else {
+                            $("#GiveAccess").show();
+                            $("#yesBtn").click(() => requestNotificationAccess(reg));
+                        }
+                    });
+            });
+        } else {
+            $("#NoSupport").show();
+        }
+
+        function requestNotificationAccess(reg) {
+            Notification.requestPermission(function (status) {
+                $("#GiveAccess").hide();
+                if (status == "granted") {
+                    getSubscription(reg);
+                } else {
+                    $("#NoSupport").show();
+                }
+            });
+        }
+
+        function getSubscription(reg) {
+            reg.pushManager.getSubscription().then(function (sub) {
+                if (sub === null) {
+                    reg.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: '@ConfigurationManager.AppSettings["publicKey"].ToString()'
+                    }).then(function (sub) {
+                        fillSubscribeFields(sub);
+                    }).catch(function (e) {
+                        console.error("Unable to subscribe to push", e);
+                    });
+                } else {
+                    fillSubscribeFields(sub);
+                }
+            });
+        }
+
+    function fillSubscribeFields(sub) {
+        var endpoint = sub.endpoint;
+        var p256h = arrayBufferToBase64(sub.getKey("p256dh"));
+        var auth = arrayBufferToBase64(sub.getKey("auth"));
+
+        $.ajax({
+            url: '@Url.Action("StoreSubscription", "PushNotification")',
+            type: 'post',
+            data: { client: '', endpoint: endpoint, p256dh: p256h, auth: auth },
+            success: function (data) {
+                console.log("Successful");
+            },
+            error: function (statusText) {
+                console.log("Error");
+            }
+        })
+
+    }
+
+    /*
+
+        //For multiple users
+let userEndpoints = ['USER1_ENDPOINT', 'USER2_ENDPOINT', 'USER3_ENDPOINT'];
+
+userEndpoints.forEach(endpoint => {
+    let notificationData = {
+        endpoint,
+        payload: {
+            title: 'My Notification Title',
+            body: 'This is my notification body'
+        }
+    };
+
+Push.create(notificationData);
+});
+
+    */
+
+        function arrayBufferToBase64(buffer) {
+            var binary = '';
+            var bytes = new Uint8Array(buffer);
+            var len = bytes.byteLength;
+            for (var i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        }
+
+
+
+        function start(){
+            Push.create("Hello World");
+        }
+
+        $(document).ready(function () {
+            $(".nav-link").click(function () {
+                $(".nav-link").removeClass("active");
+                $(this).addClass("active");
+            });
+        });
+
+
+            // Listen for the appinstalled event
+            window.addEventListener('appinstalled', function (event) {
+                // Redirect the user to a specific page
+                location.href = '@Url.Action("Index", "Home")';
+            });
+    </script>
+
+</body>
+
+
+</html>

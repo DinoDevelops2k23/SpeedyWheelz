@@ -1,0 +1,123 @@
+﻿@model List<SpeedyWheelz.Models.Product>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Scripts.Render("~/bundles/jquery")
+@if (Model.Any())
+{
+    <div class="mt-3 inputs">
+        <i class="fa fa-search"></i>
+        <input type="text" class="form-control" id="alcoholSearch" placeholder="Start typing to search for @Model[0].AlcoholCategory.Name">
+    </div>
+    <div id="alcoholWrapper">
+        <section class="ftco-section">
+            <div class="container">
+                <div class="row">
+                    @foreach (var product in Model)
+                    {
+                        <div class="col-md-3 d-flex">
+
+                            <div class="product ftco-animate">
+                                <a href="@Url.Action("Details", "Products", new { id = product.ProductId })">
+                                    <div class="img d-flex align-items-center justify-content-center" style="background-image: url(../../Content/Images/@product.ImageUrl);">
+                                    </div>
+                                </a>
+                                <div class="text text-center">
+                                    @if (product.Tag.Name == "None" || String.IsNullOrEmpty(product.Tag.Name))
+                                    {
+                                        <span></span>
+                                    }
+                                    else if (product.stockCount <= 0)
+                                    {
+                                        <span class="sale">Out Of Stock</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="sale">@product.Tag.Name</span>
+                                    }
+                                    <span class="category">@product.AlcoholCategory.Name</span>
+                                    <h2>@product.Name</h2>
+                                    <p class="mb-0"><span class="price">Price: R @product.Price</span></p>
+                                </div>
+                                <div style="margin-top: -10px" class="d-flex justify-content-center">
+                                    @if (product.stockCount <= 0)
+                                    {
+                                        <div class="px-2"><a class="btn btn-primary" disabled><span class="flaticon-shopping-bag"></span></a></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="px-2"><a class="btn btn-primary" onclick="addToCart(@product.ProductId, 1)"><span class="flaticon-shopping-bag"></span></a></div>
+                                    }
+                                    <div><a class="btn btn-success" href="@Url.Action("Details", "Products", new { id = product.ProductId })"><span class="flaticon-visibility"></span></a></div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+    </div>
+    <script>
+        $('#alcoholSearch').keyup(function () {
+            var searchVal = $(this).val();
+
+            $.ajax({
+                url: '@Url.Action("AlcoholList", "Products")',
+                type: 'get',
+                data: { searchText: searchVal, searchCategory: '@Model[0].AlcoholCategory.Name', searchCategoryId: '@Model[0].AlcoholCategoryId' },
+                success: function (data) {
+                    $('#alcoholWrapper').html(data);
+                },
+                failure: function (xmlHttpRequest) {
+                    $('#alcoholWrapper').html(xmlHttpRequest.responseText);
+                }
+            })
+        });
+    </script>
+}
+else
+{
+    <div class="alert text-center justify-content-center alert-danger">
+        <h3>Products will be added soon</h3>
+    </div>
+}
+
+
+<script>
+    function addToCart(productId, quantity) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("AddToCart", "Cart")",
+            data: { productId: productId, quantity: quantity },
+            success: function (data) {
+                if (data.success) {
+                    $('#menuPrompt').fadeIn();
+                    $('#cartDisplay').load(location.href + " #cartDisplay>*", "");
+                    $('#cartItemsDiv').load(location.href + " #cartItemsDiv>*", "");
+                } else {
+                    alert("Please login/Register to add an item");
+                }
+            }
+        });
+    }
+
+    $('#promptYes').click(function () {
+        $('#MenuWrapper').html('<img src="/Loading.gif" alt="Loading" /><img src="~/Loading.gif" hidden alt="Loading" />');
+        $('#promptNo').text('Close');
+        $.ajax({
+            url: '@Url.Action("Menu", "Products")',
+            type: 'get',
+            success: function (data) {
+                $('#MenuWrapper').html(data);
+            },
+            failure: function (error) {
+                console.log(error);
+            }
+        })
+    })
+
+    $('#promptNo').click(function () {
+        $('#menuPrompt').hide();
+    })
+</script>

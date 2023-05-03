@@ -1,0 +1,190 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="hero-wrap" style="background-image: url('../../images/bg_4.jpg'); " data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-8 ftco-animate d-flex align-items-end">
+                <div class="text w-100 text-center">
+                    <h1 class="mb-4">Good <span>Drink</span> for Good <span>Moments</span>.</h1>
+                    <p><a href="@Url.Action("Index","Download")" class="btn btn-primary py-2 px-4">Download App</a></p> <p id="scroll"><a href="#itemCatalog" class="btn btn-primary py-2 px-4">Shop Now</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-intro">
+    <div class="container">
+        <div class="row no-gutters">
+            <div class="col-md-4 d-flex">
+                <div class="intro d-lg-flex w-100 ftco-animate">
+                    <div class="icon">
+                        <span class="flaticon-support"></span>
+                    </div>
+                    <div class="text">
+                        <h2>Online Support 24/7</h2>
+                        <p>If you have any queries, you can contact support directly on <a style="color: black; font-weight: bolder" href="https://api.whatsapp.com/send?phone=27768773606&text=Hello' this is the starting message">WhatsApp <i class="fa fa-whatsapp" aria-hidden="true"></i></a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex">
+                <div class="intro color-1 d-lg-flex w-100 ftco-animate">
+                    <div class="icon">
+                        <span class="flaticon-cashback"></span>
+                    </div>
+                    <div class="text">
+                        <h2>Quality Guranteed</h2>
+                        <p>We provide the the <span style="font-weight: bolder;">Speediest</span> service guranteed to put a smile on your face.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex">
+                <div class="intro color-2 d-lg-flex w-100 ftco-animate">
+                    <div class="icon">
+                        <span class="flaticon-free-delivery"></span>
+                    </div>
+                    <div class="text">
+                        <h2>Free Delivery &amp; For Over R500</h2>
+                        <p>Does your order exceed R500, delivery on us.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="itemCatalog" class="ftco-section ftco-no-pb">
+    <div class="container">
+        <div class="row justify-content-center">
+            @Html.Action("ProductSearch", "Home")
+        </div>
+        <div class="row justify-content-center pb-5">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <span class="subheading">Our Delightful offerings</span>
+                <h2>Tastefully Yours</h2>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-2 col-md-4 ">
+                <a href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 2 })">
+                    <div class="sort w-100 text-center ftco-animate">
+                        <div class="img" style="background-image: url(../../images/kind-1.jpg);"></div>
+                        <h3>Brandy</h3>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-4 ">
+                <a href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 9 })">
+                    <div class="sort w-100 text-center ftco-animate">
+                        <div class="img" style="background-image: url(../../images/kind-2.jpg);"></div>
+                        <h3>Gin</h3>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-4 ">
+                <a href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 1 })">
+                    <div class="sort w-100 text-center ftco-animate">
+                        <div class="img" style="background-image: url(../../images/kind-3.jpg);"></div>
+                        <h3>Rum</h3>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-4 ">
+                <a href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 6 })">
+                    <div class="sort w-100 text-center ftco-animate">
+                        <div class="img" style="background-image: url(../../images/kind-4.jpg);"></div>
+                        <h3>Tequila</h3>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-4 ">
+                <a href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 7 })">
+                    <div class="sort w-100 text-center ftco-animate">
+                        <div class="img" style="background-image: url(../../images/kind-5.jpg);"></div>
+                        <h3>Vodka</h3>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-4 ">
+                <a href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 5 })">
+                    <div class="sort w-100 text-center ftco-animate">
+                        <div class="img" style="background-image: url(../../images/kind-6.jpg);"></div>
+                        <h3>Whiskey</h3>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-4 ">
+                <div class="sort w-100 text-center ftco-animate">
+                    <a href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 3 })">
+                        <div class="img" style="background-image: url(../../images/kind-7.jpg);"></div>
+                        <h3>Beer</h3>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 ">
+                <div class="sort w-100 text-center ftco-animate">
+                    <a href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 8 })">
+                        <div class="img" style="background-image: url(../../Content/Images/shee3.jpg);"></div>
+                        <h3>Tobacco</h3>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 ">
+                <div class="sort w-100 text-center ftco-animate">
+                    <a href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 4 })">
+                        <div class="img" style="background-image: url(../../images/kind-8.jpg);"></div>
+                        <h3>Cider</h3>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 ">
+                <div class="sort w-100 text-center ftco-animate">
+                    <a href="@Url.Action("Index", "Products", new { productType = "AlcoholCategory", alcoholCategory = 10 })">
+                        <div class="img" style="background-image: url(../../images/kind-9.jpg);"></div>
+                        <h3>Non-Alcoholic</h3>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-2 col-md-4 ">
+                ᠎᠎᠎&nbsp;
+            </div>
+            <div class="col-lg-2 col-md-4 ">
+                &nbsp;
+            </div>
+            <div class="col-lg-2 col-md-4 ">
+                &nbsp;
+            </div>
+        </div>
+    </div>
+</section>
+<!-- loader -->
+
+@Scripts.Render("~/bundles/jquery")
+
+
+<script>
+    $(document).ready(function () {
+        $("#scroll").click(function () {
+            $('html, body').animate({
+                scrollTop: $("#itemCatalog").offset().top
+            }, 2000);
+        });
+
+        $(window).on('load', function () {
+            if (document.cookie.indexOf("ageConfirmation=true") == -1) {
+                $('#myModal').modal('show');
+            }
+        });
+
+        $('#yesBtn').on('click', function () {
+            document.cookie = "ageConfirmation=true; expires=Thu, 01 Jan 2099 00:00:00 UTC";
+            $('#myModal').modal('hide');
+        });
+    })
+</script>
